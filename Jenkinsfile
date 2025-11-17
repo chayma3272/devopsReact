@@ -4,6 +4,8 @@ pipeline {
     environment {
         IMAGE = 'chayma9/devops'
         TAG = "build-${env.BUILD_NUMBER}"
+        CONTAINER_NAME = "devops-react-app" 
+
     }
 
     stages {
