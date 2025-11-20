@@ -9,14 +9,33 @@ export default function SettingsTeacher() {
     bio: 'Enseignant passionné par les nouvelles technologies'
   });
 
-  const handle = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
+
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handlePasswordChange = e => setPasswordForm({ ...passwordForm, [e.target.name]: e.target.value });
+
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      alert('Les mots de passe ne correspondent pas');
+      return;
+    }
+    alert('Mot de passe modifié avec succès !');
+    setShowPasswordModal(false);
+    setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  };
 
   return (
     <div>
       <h3 className="fw-bold mb-4">Paramètres du Compte</h3>
       
       <div className="row">
-        {/* Colonne principale */}
         <div className="col-lg-8">
           {/* Informations personnelles */}
           <div className="card border-0 shadow-sm mb-4">
@@ -33,7 +52,7 @@ export default function SettingsTeacher() {
                   <input 
                     name="firstName" 
                     value={form.firstName} 
-                    onChange={handle} 
+                    onChange={handleChange} 
                     className="form-control" 
                     placeholder="Votre prénom"
                   />
@@ -43,7 +62,7 @@ export default function SettingsTeacher() {
                   <input 
                     name="lastName" 
                     value={form.lastName} 
-                    onChange={handle} 
+                    onChange={handleChange} 
                     className="form-control" 
                     placeholder="Votre nom"
                   />
@@ -54,7 +73,7 @@ export default function SettingsTeacher() {
                 <input 
                   name="email" 
                   value={form.email} 
-                  onChange={handle} 
+                  onChange={handleChange} 
                   className="form-control" 
                   type="email"
                   placeholder="votre.email@example.com"
@@ -65,7 +84,7 @@ export default function SettingsTeacher() {
                 <input 
                   name="phone" 
                   value={form.phone} 
-                  onChange={handle} 
+                  onChange={handleChange} 
                   className="form-control" 
                   placeholder="+216 XX XXX XXX"
                 />
@@ -75,7 +94,7 @@ export default function SettingsTeacher() {
                 <textarea 
                   name="bio" 
                   value={form.bio} 
-                  onChange={handle} 
+                  onChange={handleChange} 
                   className="form-control" 
                   rows="3"
                   placeholder="Parlez de vous..."
@@ -101,7 +120,10 @@ export default function SettingsTeacher() {
                   <div className="fw-semibold">Mot de passe</div>
                   <small className="text-muted">Dernière modification il y a 3 mois</small>
                 </div>
-                <button className="btn btn-outline-primary btn-sm">
+                <button 
+                  className="btn btn-outline-primary btn-sm"
+                  onClick={() => setShowPasswordModal(true)}
+                >
                   <i className="bi bi-key me-1"></i>Changer
                 </button>
               </div>
@@ -161,7 +183,6 @@ export default function SettingsTeacher() {
           </div>
         </div>
 
-        {/* Colonne latérale */}
         <div className="col-lg-4">
           {/* Photo de profil */}
           <div className="card border-0 shadow-sm mb-4">
@@ -217,6 +238,77 @@ export default function SettingsTeacher() {
           </div>
         </div>
       </div>
+
+      {/* Modal de changement de mot de passe */}
+      {showPasswordModal && (
+        <div className="modal d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">
+                  <i className="bi bi-key me-2"></i>Changer le Mot de Passe
+                </h5>
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={() => setShowPasswordModal(false)}
+                ></button>
+              </div>
+              <form onSubmit={handlePasswordSubmit}>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label">Mot de passe actuel</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="currentPassword"
+                      value={passwordForm.currentPassword}
+                      onChange={handlePasswordChange}
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Nouveau mot de passe</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="newPassword"
+                      value={passwordForm.newPassword}
+                      onChange={handlePasswordChange}
+                      required
+                      minLength="8"
+                    />
+                    <small className="text-muted">Minimum 8 caractères</small>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Confirmer le mot de passe</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      name="confirmPassword"
+                      value={passwordForm.confirmPassword}
+                      onChange={handlePasswordChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button 
+                    type="button" 
+                    className="btn btn-secondary" 
+                    onClick={() => setShowPasswordModal(false)}
+                  >
+                    Annuler
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    <i className="bi bi-check-circle me-2"></i>Sauvegarder
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
